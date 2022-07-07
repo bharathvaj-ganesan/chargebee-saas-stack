@@ -1,10 +1,14 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import Navbar from "components/ui/Navbar";
-import Footer from "components/ui/Footer";
+import Navbar from "@/components/ui/Navbar";
+import Footer from "@/components/ui/Footer";
 import { ReactNode } from "react";
-import { PageMeta } from "../types";
+
+interface PageMeta {
+  title: string;
+  description: string;
+}
 
 interface Props {
   children: ReactNode;
@@ -14,7 +18,6 @@ interface Props {
 export default function Layout({ children, meta: pageMeta }: Props) {
   const meta = {
     title: "Chargebee Subscription SAAS Stack",
-    description: "Brought to you by Chargebee and NextJS.",
     ...pageMeta,
   };
 

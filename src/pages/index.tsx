@@ -1,111 +1,130 @@
-import Pricing from "@/components/Pricing";
-import { GetStaticPropsResult } from "next";
-import { Item, ItemPrice } from "@prisma/client";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "@/server/trpc/router/_app";
-import { createContextInner } from "@/server/trpc/context";
+import Link from "next/link";
 
-interface Props {
-  items: Item[];
-  itemPrices: ItemPrice[];
+export default function LandingPage() {
+  return (
+    <main className="flex h-full flex-col items-center justify-center bg-black">
+      {/* Main. */}
+      <div className="relative flex flex-col items-center">
+        {/* Packages. */}
+        <img
+          src="https://user-images.githubusercontent.com/1500684/157764397-ccd8ea10-b8aa-4772-a99b-35de937319e1.svg"
+          alt=""
+          className="float absolute top-[5%] left-[25%] h-16 w-28 select-none opacity-60 grayscale hue-rotate-180 invert transition
+					hover:scale-110 hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://user-images.githubusercontent.com/1500684/157764484-ad64a21a-d7fb-47e3-8669-ec046da20c1f.svg"
+          alt=""
+          className="float absolute top-[25%] left-[15%] h-16 w-28 select-none opacity-80 grayscale hue-rotate-180 invert transition
+					hover:scale-110 hover:opacity-100 hover:grayscale-0"
+        />
+
+        <img
+          src="https://user-images.githubusercontent.com/1500684/157764276-a516a239-e377-4a20-b44a-0ac7b65c8c14.svg"
+          alt=""
+          className="float absolute top-[5%] right-[25%] h-16 w-32 select-none opacity-80 grayscale hue-rotate-180 invert transition
+					hover:scale-110 hover:opacity-100 hover:grayscale-0"
+        />
+        <img
+          src="https://user-images.githubusercontent.com/1500684/157773063-20a0ed64-b9f8-4e0b-9d1e-0b65a3d4a6db.svg"
+          alt=""
+          className="float absolute top-[25%] right-[15%] h-14 w-14 select-none opacity-80 grayscale hue-rotate-180 invert transition
+					hover:scale-110 hover:opacity-100 hover:grayscale-0"
+        />
+
+        {/* Logo. */}
+        <a href="https://chargebee.com" target="_blank" rel="noreferrer">
+          <img
+            src="/chargebee-logo.png"
+            alt=""
+            className="pulse h-24 w-24 cursor-pointer select-none opacity-80 grayscale hue-rotate-15 transition hover:opacity-100 hover:brightness-125 hover:grayscale-0"
+          />
+        </a>
+        <div className="mb-8" />
+
+        {/* Headings. */}
+        <div className="flex flex-col items-center">
+          <h1 className="text-3xl font-light text-gray-100">
+            <span className="font-bold text-gray-100">Next.js</span> Website
+            Stack
+          </h1>
+          <div className="mb-1" />
+          <p className="cursor-default text-lg font-semibold text-gray-400 transition hover:brightness-125">
+            Open Source Template
+          </p>
+        </div>
+        <div className="mb-6" />
+
+        <div className="flex cursor-default flex-col items-center">
+          <h1 className="text-center text-8xl font-bold text-gray-200">
+            <span
+              className="bg-clip-text 
+							text-primary transition hover:brightness-125"
+            >
+              Chargebee
+            </span>{" "}
+            Subscriptions
+          </h1>
+          <h1
+            className="bg-gradient-to-b from-gray-200 to-gray-400 bg-clip-text text-8xl 
+						font-bold text-transparent transition hover:brightness-125"
+          >
+            made simpler
+          </h1>
+        </div>
+        <div className="mb-8" />
+
+        <p className="max-w-lg text-center text-xl font-semibold text-gray-400">
+          Build SAAS apps easily with{" "}
+          <a
+            href="https://www.chargebee.com/docs/2.0/product-catalog.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-100 underline decoration-gray-500 transition 
+						hover:text-orange-200 hover:decoration-orange-200 active:opacity-80"
+          >
+            Chargebee Subscriptions
+          </a>
+        </p>
+        <div className="mb-6" />
+
+        {/* Buttons. */}
+        <div className="flex flex-row items-center">
+          <a
+            href="https://github.com/bharathvaj-ganesan/chargebee-saas-stack"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-12 flex-row items-center rounded-xl border border-gray-600 px-6 text-base font-bold text-gray-200 
+						transition hover:scale-105 hover:border-gray-200 hover:text-gray-100 active:opacity-80"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+            <div className="mx-1" />
+            Documentation
+          </a>
+          <div className="mx-2" />
+
+          <Link
+            href="/pricing"
+            className="flex h-12 flex-row items-center rounded-xl bg-primary px-6 text-base font-bold 
+						text-gray-100 transition hover:scale-105 hover:brightness-125 active:opacity-80"
+          >
+            Try Template
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }
-
-export default function PricingPage({ items, itemPrices }: Props) {
-  return <Pricing items={items} itemPrices={itemPrices} />;
-}
-
-export async function getStaticProps(): Promise<GetStaticPropsResult<any>> {
-  const ssg = await createProxySSGHelpers({
-    router: appRouter,
-    ctx: await createContextInner(),
-  });
-  const [items, itemPrices] = await Promise.all([
-    ssg.pricing.getAllItems.fetch(),
-    ssg.pricing.getAllItemPrices.fetch(),
-  ]);
-
-  return {
-    props: {
-      items: items,
-      itemPrices,
-    },
-    revalidate: 3600,
-  };
-}
-
-// const Home: NextPage = () => {
-//   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-
-//   return (
-//     <>
-//       <Head>
-//         <title>Next.js Subscription Saas Starter</title>
-//         <meta name="description" content="Generated by create-t3-app" />
-//         <link rel="icon" href="/favicon.png" />
-//       </Head>
-//       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-//         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-//           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-//             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-//           </h1>
-//           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-//             <Link
-//               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-//               href="https://create.t3.gg/en/usage/first-steps"
-//               target="_blank"
-//             >
-//               <h3 className="text-2xl font-bold">First Steps →</h3>
-//               <div className="text-lg">
-//                 Just the basics - Everything you need to know to set up your
-//                 database and authentication.
-//               </div>
-//             </Link>
-//             <Link
-//               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-//               href="https://create.t3.gg/en/introduction"
-//               target="_blank"
-//             >
-//               <h3 className="text-2xl font-bold">Documentation →</h3>
-//               <div className="text-lg">
-//                 Learn more about Next.js Subscription Saas Starter, the
-//                 libraries it uses, and how to deploy it.
-//               </div>
-//             </Link>
-//           </div>
-//           <div className="flex flex-col items-center gap-2">
-//             <p className="text-2xl text-white">
-//               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-//             </p>
-//             <AuthShowcase />
-//           </div>
-//         </div>
-//       </main>
-//     </>
-//   );
-// };
-
-// export default Home;
-
-// const AuthShowcase: React.FC = () => {
-//   const { data: sessionData } = useSession();
-
-//   const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
-//     undefined, // no input
-//     { enabled: sessionData?.user !== undefined }
-//   );
-
-//   return (
-//     <div className="flex flex-col items-center justify-center gap-4">
-//       <p className="text-center text-2xl text-white">
-//         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-//         {secretMessage && <span> - {secretMessage}</span>}
-//       </p>
-//       <button
-//         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-//         onClick={sessionData ? () => signOut() : () => signIn()}
-//       >
-//         {sessionData ? "Sign out" : "Sign in"}
-//       </button>
-//     </div>
-//   );
-// };

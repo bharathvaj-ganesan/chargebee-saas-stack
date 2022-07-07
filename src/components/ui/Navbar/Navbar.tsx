@@ -22,15 +22,17 @@ const Navbar = () => {
           <div className="flex flex-1 items-center">
             <Link href="/">
               <span className="font-bold text-gray-200">Chargebee</span>
-              &nbsp;Stack<div className="mx-1"></div>
+              &nbsp;<span className="text-primary">Stack</span>
             </Link>
             <nav className="ml-6 hidden space-x-2 lg:block">
-              <Link href="/">
-                <a className={s.link}>Pricing</a>
+              <Link href="/pricing">
+                <span className={s.link}>Pricing</span>
               </Link>
-              <Link href="/account">
-                <a className={s.link}>Account</a>
-              </Link>
+              {session && (
+                <Link href="/account">
+                  <span className={s.link}>Account</span>
+                </Link>
+              )}
             </nav>
           </div>
 
@@ -41,7 +43,7 @@ const Navbar = () => {
               </span>
             ) : (
               <Link href="/signin">
-                <a className={s.link}>Sign in</a>
+                <span className={s.link}>Sign in</span>
               </Link>
             )}
           </div>
