@@ -3,31 +3,29 @@ import Link from "next/link";
 export default function LandingPage() {
   return (
     <main className="flex h-full flex-col items-center justify-center bg-black">
-      {/* Main. */}
       <div className="relative flex flex-col items-center">
-        {/* Packages. */}
         <img
-          src="https://user-images.githubusercontent.com/1500684/157764397-ccd8ea10-b8aa-4772-a99b-35de937319e1.svg"
-          alt=""
+          src="/next.svg"
+          alt="Next JS"
           className="float absolute top-[5%] left-[25%] h-16 w-28 select-none opacity-60 grayscale hue-rotate-180 invert transition
 					hover:scale-110 hover:opacity-100 hover:grayscale-0"
         />
         <img
-          src="https://user-images.githubusercontent.com/1500684/157764484-ad64a21a-d7fb-47e3-8669-ec046da20c1f.svg"
-          alt=""
+          src="/trpc.svg"
+          alt="tRPC"
           className="float absolute top-[25%] left-[15%] h-16 w-28 select-none opacity-80 grayscale hue-rotate-180 invert transition
 					hover:scale-110 hover:opacity-100 hover:grayscale-0"
         />
 
         <img
-          src="https://user-images.githubusercontent.com/1500684/157764276-a516a239-e377-4a20-b44a-0ac7b65c8c14.svg"
-          alt=""
+          src="/tailwind.svg"
+          alt="tailwind"
           className="float absolute top-[5%] right-[25%] h-16 w-32 select-none opacity-80 grayscale hue-rotate-180 invert transition
 					hover:scale-110 hover:opacity-100 hover:grayscale-0"
         />
         <img
-          src="https://user-images.githubusercontent.com/1500684/157773063-20a0ed64-b9f8-4e0b-9d1e-0b65a3d4a6db.svg"
-          alt=""
+          src="/typescript.svg"
+          alt="typescript"
           className="float absolute top-[25%] right-[15%] h-14 w-14 select-none opacity-80 grayscale hue-rotate-180 invert transition
 					hover:scale-110 hover:opacity-100 hover:grayscale-0"
         />
