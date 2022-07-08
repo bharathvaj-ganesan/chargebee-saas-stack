@@ -9,23 +9,23 @@
 }
 
 *:focus {
-  @apply outline-none ring-2 ring-pink-500 ring-opacity-50;
+  @apply outline-none ring-2 ring-primary ring-opacity-50;
 }
 
 html {
   height: 100%;
   box-sizing: border-box;
   touch-action: manipulation;
-  font-feature-settings: 'case' 1, 'rlig' 1, 'calt' 0;
+  font-feature-settings: "case" 1, "rlig" 1, "calt" 0;
 }
 
 html,
 body {
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Helvetica Neue',
-    'Helvetica', sans-serif;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Helvetica Neue",
+    "Helvetica", sans-serif;
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
-  @apply text-white bg-black antialiased;
+  @apply bg-black text-white antialiased;
 }
 
 body {
@@ -55,41 +55,41 @@ a {
 * Animations.
 */
 @keyframes pulse {
-	from {
-		transform: scale3d(1, 1, 1);
-	}
+  from {
+    transform: scale3d(1, 1, 1);
+  }
 
-	50% {
-		transform: scale3d(1.2, 1.2, 1.2);
-	}
+  50% {
+    transform: scale3d(1.2, 1.2, 1.2);
+  }
 
-	to {
-		transform: scale3d(1, 1, 1);
-	}
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }
 
 @keyframes float {
-	0% {
-		transform: translatey(0px);
-	}
-	50% {
-		transform: translatey(-20px);
-	}
-	100% {
-		transform: translatey(0px);
-	}
+  0% {
+    transform: translatey(0px);
+  }
+  50% {
+    transform: translatey(-20px);
+  }
+  100% {
+    transform: translatey(0px);
+  }
 }
 
 .pulse {
-	animation-name: pulse;
-	animation-duration: 4s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: infinite;
+  animation-name: pulse;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .float {
-	animation-name: float;
-	animation-duration: 6s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: infinite;
+  animation-name: float;
+  animation-duration: 6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
