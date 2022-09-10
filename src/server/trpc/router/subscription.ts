@@ -2,6 +2,8 @@ import { TypeOf, z } from "zod";
 import { type Context } from "../context";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { getURL } from "@/utils/url";
+import { ChargebeeSubscriptionStatus } from "@prisma/client";
 
 /**
  * Controllers
@@ -17,7 +19,7 @@ export type CreateCheckoutSessionInput = TypeOf<
   typeof createCheckoutSessionSchema
 >;
 
-async function createPostHandler({
+async function createCheckoutSessionHandler({
   input,
   ctx,
 }: {
@@ -44,6 +46,8 @@ async function createPostHandler({
         id: userId,
         name: user?.name || "",
       },
+      redirect_url: `${getURL()}/account`,
+      cancel_url: `${getURL()}/pricing`,
     };
     if (user?.email) {
       payload.customer.email = user?.email;
@@ -64,6 +68,27 @@ async function createPostHandler({
   }
 }
 
+async function getSubscriptionStatusHandler({ ctx }: { ctx: Context }) {
+  try {
+    const { session, prisma } = ctx;
+    const userId = session?.user?.id as string;
+    const subscription = await prisma.subscription.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return {
+      subscription,
+    };
+  } catch (err) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Unable to retrive subscription",
+    });
+  }
+}
+
 /**
  * Router Defns
  */
@@ -71,5 +96,8 @@ async function createPostHandler({
 export const subscriptionRouter = router({
   createCheckoutSession: protectedProcedure
     .input(createCheckoutSessionSchema)
-    .mutation(({ input, ctx }) => createPostHandler({ input, ctx })),
+    .mutation(({ input, ctx }) => createCheckoutSessionHandler({ input, ctx })),
+  getSubscriptionStatus: protectedProcedure.query(({ ctx }) =>
+    getSubscriptionStatusHandler({ ctx })
+  ),
 });

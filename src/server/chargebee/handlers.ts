@@ -77,6 +77,7 @@ async function upsertSubscriptionRecord({
   await prisma.subscription.upsert({
     where: {
       id: subscription.id,
+      userId: subscription.customer_id,
     },
     update: {
       status: subscription.status as ChargebeeSubscriptionStatus,

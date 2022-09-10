@@ -3,7 +3,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Script from "next/script";
-import { ChargebeePeriodUnit, Item, ItemPrice } from "@prisma/client";
+import {
+  ChargebeePeriodUnit,
+  Item,
+  ItemPrice,
+  Subscription,
+} from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { env } from "@/env/client.mjs";
 import { trpc } from "@/utils/trpc";
@@ -11,6 +16,7 @@ import { trpc } from "@/utils/trpc";
 interface Props {
   items: Item[];
   itemPrices: ItemPrice[];
+  subscription?: Subscription;
 }
 
 declare global {
@@ -21,7 +27,11 @@ declare global {
   }
 }
 
-export default function Pricing({ items = [], itemPrices = [] }: Props) {
+export default function Pricing({
+  items = [],
+  itemPrices = [],
+  subscription,
+}: Props) {
   const router = useRouter();
   const [cbInstance, setCbInstance] = useState<any>(null);
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
@@ -72,6 +82,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
         return data.hostedPage;
       },
       success() {
+        //TODO: Make a request to cb to fetch the update
         alert(
           "Successfully created/updated subscription. It'll take sometime to update in the app"
         );
