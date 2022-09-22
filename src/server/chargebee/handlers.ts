@@ -1,20 +1,19 @@
 import {
   ChargebeePeriodUnit,
   ChargebeePricingModel,
+  ChargebeeSubscriptionStatus,
   PrismaClient,
 } from "@prisma/client";
 import { Event } from "chargebee-typescript/lib/resources";
-import type { ChargeBee } from "chargebee-typescript";
 
 type Result = Event["content"];
 
-async function upsertItemRecord({
-  content,
-  prisma,
-}: {
+interface WebhookHandlerProp {
   content: Result;
   prisma: PrismaClient;
-}) {
+}
+
+async function upsertItemRecord({ content, prisma }: WebhookHandlerProp) {
   const item = content.item;
   await prisma.item.upsert({
     where: {
@@ -70,51 +69,25 @@ async function upsertItemPriceRecord({
   });
 }
 
-// async function getOrCreateChargbeeCustomerIdForUser({
-//   userId,
-//   prisma,
-//   chargbee,
-// }: {
-//   userId: string;
-//   prisma: PrismaClient;
-//   chargbee: ChargeBee;
-// }) {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       id: userId,
-//     },
-//   });
-
-//   if (!user) throw new Error("User not found");
-
-//   if (user.chargebeeCustomerId) {
-//     return user.chargebeeCustomerId;
-//   }
-
-//   // create a new customer
-//   const customer = await chargbee.customer.create({
-//     email: user.email ?? undefined,
-//     name: user.name ?? undefined,
-//     // use metadata to link this Stripe customer to internal user id
-//     metadata: {
-//       userId,
-//     },
-//   });
-
-//   // update with new customer id
-//   const updatedUser = await prisma.user.update({
-//     where: {
-//       id: userId,
-//     },
-//     data: {
-//       stripeCustomerId: customer.id,
-//     },
-//   });
-
-//   if (updatedUser.stripeCustomerId) {
-//     return updatedUser.stripeCustomerId;
-//   }
-// }
+async function upsertSubscriptionRecord({
+  content,
+  prisma,
+}: WebhookHandlerProp) {
+  const subscription = content.subscription;
+  await prisma.subscription.upsert({
+    where: {
+      id: subscription.id,
+    },
+    update: {
+      status: subscription.status as ChargebeeSubscriptionStatus,
+    },
+    create: {
+      id: subscription.id,
+      userId: subscription.customer_id,
+      status: subscription.status as ChargebeeSubscriptionStatus,
+    },
+  });
+}
 
 export default async function webhookHandlers(
   payload: Event,
@@ -137,6 +110,15 @@ export default async function webhookHandlers(
     case "item_price_created":
     case "item_price_updated":
       await upsertItemPriceRecord({
+        content,
+        prisma,
+      });
+      break;
+    case "subscription_created":
+    case "subscription_cancelled":
+    case "subscription_changed":
+    case "subscription_renewed":
+      await upsertSubscriptionRecord({
         content,
         prisma,
       });

@@ -15,12 +15,6 @@ datasource db {
   relationMode = "prisma" // Reason -> Planetscale doesn't support FKey constraint
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
   id                       String  @id @default(cuid())
@@ -75,7 +69,7 @@ model VerificationToken {
 // Subscription Mgmt
 // Items: Plans are created and managed in Chargebee and synced to our DB via its webhooks.
 
-enum ChargebeeItemStatus {
+enum ChargebeeSubscriptionStatus {
   future       @map("future")
   in_trial     @map("in_trial")
   active       @map("active")
@@ -126,10 +120,10 @@ model ItemPrice {
 }
 
 model Subscription {
-  id     String              @unique
-  User   User                @relation(fields: [userId], references: [id])
+  id     String                      @unique
+  User   User                        @relation(fields: [userId], references: [id])
   userId String
-  status ChargebeeItemStatus
+  status ChargebeeSubscriptionStatus
 
   @@index([userId])
 }
