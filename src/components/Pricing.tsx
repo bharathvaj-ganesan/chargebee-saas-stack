@@ -3,11 +3,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Script from "next/script";
-import { ChargebeePeriodUnit, ItemPrice } from "@prisma/client";
+import { ChargebeePeriodUnit, Item, ItemPrice } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { env } from "@/env/client.mjs";
 
 interface Props {
+  items: Item[];
   itemPrices: ItemPrice[];
 }
 
@@ -19,20 +20,24 @@ declare global {
   }
 }
 
-export default function Pricing({ itemPrices = [] }: Props) {
+export default function Pricing({ items = [], itemPrices = [] }: Props) {
   const router = useRouter();
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
   const { data: session } = useSession();
   const [periodUnit, setPeriodUnit] = useState<ChargebeePeriodUnit>(
-    ChargebeePeriodUnit.Month
+    ChargebeePeriodUnit.month
   );
   const [itemPricesToDisplay, setItemPricesToDisplay] = useState<ItemPrice[]>(
     []
   );
 
+  const getItem = (itemId: string) => items.find((i) => i.id === itemId);
+
   useEffect(() => {
     setItemPricesToDisplay(
-      itemPrices.filter((item) => item.periodUnit === periodUnit)
+      itemPrices
+        .filter((item) => item.periodUnit === periodUnit)
+        .sort((a, b) => a.price - b.price)
     );
   }, [itemPrices, periodUnit]);
 
@@ -105,10 +110,10 @@ export default function Pricing({ itemPrices = [] }: Props) {
           </p>
           <div className="relative mt-6 flex self-center rounded-lg border border-zinc-800 bg-zinc-900 p-0.5 sm:mt-8">
             <button
-              onClick={() => setPeriodUnit(ChargebeePeriodUnit.Month)}
+              onClick={() => setPeriodUnit(ChargebeePeriodUnit.month)}
               type="button"
               className={`${
-                periodUnit === ChargebeePeriodUnit.Month
+                periodUnit === ChargebeePeriodUnit.month
                   ? "relative w-1/2 border-zinc-800 bg-primary text-white shadow-sm"
                   : "relative ml-0.5 w-1/2 border border-transparent text-zinc-400"
               } m-1 whitespace-nowrap rounded-md py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 sm:w-auto sm:px-8`}
@@ -116,10 +121,10 @@ export default function Pricing({ itemPrices = [] }: Props) {
               Monthly billing
             </button>
             <button
-              onClick={() => setPeriodUnit(ChargebeePeriodUnit.Year)}
+              onClick={() => setPeriodUnit(ChargebeePeriodUnit.year)}
               type="button"
               className={`${
-                periodUnit === ChargebeePeriodUnit.Year
+                periodUnit === ChargebeePeriodUnit.year
                   ? "relative w-1/2 border-zinc-800 bg-primary text-white shadow-sm"
                   : "relative ml-0.5 w-1/2 border border-transparent text-zinc-400"
               } m-1 whitespace-nowrap rounded-md py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 sm:w-auto sm:px-8`}
@@ -136,6 +141,8 @@ export default function Pricing({ itemPrices = [] }: Props) {
               minimumFractionDigits: 0,
             }).format((itemPrice.price || 0) / 100);
 
+            const item = getItem(itemPrice.itemId);
+
             return (
               <div
                 key={itemPrice.id}
@@ -145,9 +152,14 @@ export default function Pricing({ itemPrices = [] }: Props) {
               >
                 <div className="p-6">
                   <h2 className="text-2xl font-semibold leading-6 text-white">
-                    {itemPrice.name}
+                    {item?.name || itemPrice.name}
                   </h2>
-                  <p className="mt-4 text-zinc-300">{itemPrice.description}</p>
+                  <p
+                    className="mt-4 text-zinc-300"
+                    style={{ minHeight: "84px" }}
+                  >
+                    {item?.description || itemPrice.description}
+                  </p>
                   <p className="mt-12">
                     <span className="white text-5xl font-extrabold">
                       {priceString}
