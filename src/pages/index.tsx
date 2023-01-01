@@ -1,22 +1,34 @@
 import Pricing from "@/components/Pricing";
-import { GetStaticPropsResult } from "next";
+import { GetStaticPropsResult, InferGetStaticPropsType } from "next";
 import { ItemPrice } from "@prisma/client";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { appRouter } from "@/server/trpc/router/_app";
+import { createContextInner } from "@/server/trpc/context";
+import { trpc } from "@/utils/trpc";
 
 interface Props {
   itemPrices: ItemPrice[];
 }
 
-export default function PricingPage({ itemPrices }: Props) {
-  return <Pricing itemPrices={itemPrices} />;
+export default function PricingPage(
+  props: InferGetStaticPropsType<typeof getStaticProps>
+) {
+  const getQuery = trpc.pricing.getAllItemPrices.useQuery();
+  if (getQuery.status !== "success") {
+    return <div>Loading...</div>;
+  }
+  return <Pricing itemPrices={getQuery.data} />;
 }
 
-export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
-  const products: any = [];
-
+export async function getStaticProps(): Promise<GetStaticPropsResult<any>> {
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx: await createContextInner(),
+  });
+  await ssg.pricing.getAllItemPrices.prefetch();
+  ssg.dehydrate();
   return {
-    props: {
-      products,
-    },
+    props: {},
     revalidate: 60,
   };
 }

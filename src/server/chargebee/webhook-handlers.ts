@@ -41,6 +41,7 @@ async function upsertItemPriceRecord(data: Result) {
     },
     create: {
       id: itemPrice.id,
+      itemId: itemPrice.item_id,
       name: itemPrice.external_name!,
       description: itemPrice.description,
       pricingModel: itemPrice.pricing_model as ChargebeePricingModel,

@@ -76,27 +76,27 @@ model VerificationToken {
 // Items: Plans are created and managed in Chargebee and synced to our DB via its webhooks.
 
 enum ChargebeeItemStatus {
-  Future      @map("future")
-  InTrial     @map("in_trial")
-  Active      @map("active")
-  NonRenewing @map("non_renewing")
-  Paused      @map("paused")
-  Cancelled   @map("cancelled")
+  future       @map("future")
+  in_trial     @map("in_trial")
+  active       @map("active")
+  non_renewing @map("non_renewing")
+  paused       @map("paused")
+  cancelled    @map("cancelled")
 }
 
 enum ChargebeePricingModel {
-  FlatFee   @map("flat_fee")
-  PerUnit   @map("per_unit")
-  Tiered    @map("tiered")
-  Volume    @map("volume")
-  Stairstep @map("stairstep")
+  flat_fee  @map("flat_fee")
+  per_unit  @map("per_unit")
+  tiered    @map("tiered")
+  volume    @map("volume")
+  stairstep @map("stairstep")
 }
 
 enum ChargebeePeriodUnit {
-  Day   @map("day")
-  Week  @map("week")
-  Month @map("month")
-  Year  @map("year")
+  day   @map("day")
+  week  @map("week")
+  month @map("month")
+  year  @map("year")
 }
 
 model Item {
@@ -115,7 +115,7 @@ model ItemPrice {
   item         Item?                 @relation(fields: [itemId], references: [id])
   itemId       String
   metadata     Json?
-  pricingModel ChargebeePricingModel @default(FlatFee)
+  pricingModel ChargebeePricingModel @default(flat_fee)
   active       Boolean               @default(true)
   price        Int
   period       Int                   @default(1)
