@@ -6,7 +6,6 @@ A Chargebee focused T3 Stack that integrates User Subscriptions, Authentication 
 
 - Full stack typesafety with t3-stack.
 - Database ORM with Prisma.
-- Production Ready with Planetscale. You can also host your database on any env.
 - Automatic deployment to Vercel
 - Styling with Tailwind.css + Tailwind Prettier-Plugin.
 - Linting with ESLint.
@@ -18,3 +17,11 @@ A Chargebee focused T3 Stack that integrates User Subscriptions, Authentication 
 [https://chargebee-saas-stack.vercel.app/](https://chargebee-saas-stack.vercel.app/)
 
 [![Screenshot of demo](./public/demo.png)](https://chargebee-saas-stack.vercel.app/)
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for more information.
+
+## Credits
+
+Inspired from [Vercel Subscription Template](https://github.com/vercel/nextjs-subscription-payments)
