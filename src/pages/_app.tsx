@@ -4,7 +4,8 @@ import { SessionProvider } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
 
-import "../styles/globals.css";
+import "@/styles/global.css";
+import "@/styles/chrome-bug.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
