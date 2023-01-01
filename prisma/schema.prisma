@@ -76,27 +76,27 @@ model VerificationToken {
 // Items: Plans are created and managed in Chargebee and synced to our DB via its webhooks.
 
 enum ChargebeeItemStatus {
-  Future
+  Future      @map("future")
   InTrial     @map("in_trial")
-  Active
+  Active      @map("active")
   NonRenewing @map("non_renewing")
-  Paused
-  Cancelled
+  Paused      @map("paused")
+  Cancelled   @map("cancelled")
 }
 
 enum ChargebeePricingModel {
   FlatFee   @map("flat_fee")
   PerUnit   @map("per_unit")
-  Tiered
-  Volume
-  Stairstep
+  Tiered    @map("tiered")
+  Volume    @map("volume")
+  Stairstep @map("stairstep")
 }
 
 enum ChargebeePeriodUnit {
-  Day
-  Week
-  Month
-  Year
+  Day   @map("day")
+  Week  @map("week")
+  Month @map("month")
+  Year  @map("year")
 }
 
 model Item {

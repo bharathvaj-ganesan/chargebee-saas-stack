@@ -1,19 +1,13 @@
-import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
-
-import { trpc } from "../utils/trpc";
 import Pricing from "@/components/Pricing";
 import { GetStaticPropsResult } from "next";
-import { Item } from "@prisma/client";
-
-export default function PricingPage({ products }: Props) {
-  return <div>Hello World</div>;
-}
+import { ItemPrice } from "@prisma/client";
 
 interface Props {
-  products: Item;
+  itemPrices: ItemPrice[];
+}
+
+export default function PricingPage({ itemPrices }: Props) {
+  return <Pricing itemPrices={itemPrices} />;
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
