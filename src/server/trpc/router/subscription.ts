@@ -1,6 +1,7 @@
 import { TypeOf, z } from "zod";
 import { type Context } from "../context";
 import { router, protectedProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
 
 /**
  * Controllers
@@ -23,41 +24,44 @@ async function createPostHandler({
   input: CreateCheckoutSessionInput;
   ctx: Context;
 }) {
-  debugger;
-  const itemPriceId = input.itemPriceId;
-  const user = ctx.session?.user;
-  const userId = user?.id;
-  const chargebee = ctx.chargebee;
+  try {
+    const itemPriceId = input.itemPriceId;
+    const user = ctx.session?.user;
+    const userId = user?.id;
+    const chargebee = ctx.chargebee;
 
-  const payload: any = {
-    subscription: {
-      id: userId,
-    },
-    subscription_items: [
-      {
-        item_price_id: itemPriceId,
+    const payload: any = {
+      subscription: {
+        id: userId,
       },
-    ],
-    customer: {
-      id: userId,
-      name: user?.name || "",
-    },
-  };
-  if (user?.email) {
-    payload.customer.email = user?.email;
+      subscription_items: [
+        {
+          item_price_id: itemPriceId,
+          quantity: 1,
+        },
+      ],
+      customer: {
+        id: userId,
+        name: user?.name || "",
+      },
+    };
+    if (user?.email) {
+      payload.customer.email = user?.email;
+    }
+
+    const result = await chargebee.hosted_page
+      .checkout_new_for_items(payload)
+      .request();
+
+    return {
+      hostedPage: result?.hosted_page,
+    };
+  } catch (err) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Unable to create subscription @ Chargebee",
+    });
   }
-
-  const result = await chargebee.hosted_page
-    .checkout_new_for_items(payload)
-    .request();
-
-  if (!result?.hosted_page) {
-    throw new Error("Could not create checkout session");
-  }
-
-  return {
-    hostedPage: result?.hosted_page,
-  };
 }
 
 /**

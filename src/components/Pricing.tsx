@@ -40,7 +40,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
   function initChargebee() {
     return window.Chargebee.init({
       site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE_ID,
-      // isItemsModel: true,
+      isItemsModel: true,
     });
   }
 
@@ -69,7 +69,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
         const data = await createCheckoutSession({
           itemPriceId: itemPrice.id,
         });
-        return data;
+        return data.hostedPage;
       },
       success() {
         alert(
