@@ -43,8 +43,7 @@ export default function LandingPage() {
         {/* Headings. */}
         <div className="flex flex-col items-center">
           <h1 className="text-3xl font-light text-gray-100">
-            <span className="font-bold text-gray-100">Next.js</span> Website
-            Stack
+            <span className="font-bold text-gray-100">Next.js</span> SAAS Stack
           </h1>
           <div className="mb-1" />
           <p className="cursor-default text-lg font-semibold text-gray-400 transition hover:brightness-125">

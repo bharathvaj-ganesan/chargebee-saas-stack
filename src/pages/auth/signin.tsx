@@ -10,7 +10,7 @@ export default function SigninPage() {
     string,
     ClientSafeProvider
   > | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setLoading(true);
@@ -25,7 +25,7 @@ export default function SigninPage() {
     return (
       <section className="bg-black">
         <div className="align-center mx-auto flex max-w-6xl flex-col items-center py-8 px-4 sm:py-24 sm:px-6 lg:px-8">
-          <div>
+          <div className="block h-80 max-w-sm rounded-lg border border-zinc-600 p-12 shadow-md">
             <span>Fetching login options </span>
             <LoadingDots />
           </div>
@@ -50,7 +50,7 @@ export default function SigninPage() {
     <>
       <section className="bg-black">
         <div className="align-center mx-auto flex max-w-6xl flex-col items-center py-8 px-4 sm:py-24 sm:px-6 lg:px-8">
-          <div className="block max-w-sm rounded-lg border border-zinc-600 p-12 shadow-md">
+          <div className="block h-80 max-w-sm rounded-lg border border-zinc-600 p-12 shadow-md">
             <div className="mb-4	text-center	text-2xl	font-bold">Welcome back</div>
             {Object.keys(providers)
               .filter((p) => providers[p]?.type !== "credentials")
@@ -59,7 +59,11 @@ export default function SigninPage() {
                   type="submit"
                   key={providerKey}
                   className="w-100 mb-3"
-                  onClick={() => signIn(providers[providerKey]?.id)}
+                  onClick={() =>
+                    signIn(providers[providerKey]?.id, {
+                      callbackUrl: "/account",
+                    })
+                  }
                 >
                   Continue with {providers[providerKey]?.name}{" "}
                 </Button>

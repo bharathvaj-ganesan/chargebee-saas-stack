@@ -1,3 +1,4 @@
+import { requireAuth } from "@/server/common/get-server-auth-session";
 import { useSession } from "next-auth/react";
 
 export default function AccountPage() {
@@ -15,3 +16,7 @@ export default function AccountPage() {
     </section>
   );
 }
+
+export const getServerSideProps = requireAuth(() => {
+  return Promise.resolve({ props: {} });
+});
