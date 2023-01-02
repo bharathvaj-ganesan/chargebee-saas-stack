@@ -7,4 +7,5 @@ export const chargebee = (() => {
     site: SITE_ID,
     api_key: API_KEY,
   });
+  return cb;
 })();

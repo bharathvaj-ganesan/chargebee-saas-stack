@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CHARGEBEE_WEBHOOKS_REQUEST_ORIGINS } from "@/server/chargebee/config";
-import webhookHandlers from "@/server/chargebee/webhook-handlers";
+import webhookHandlers from "@/server/chargebee/handlers";
+import { prisma } from "@/server/db/client";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,7 +16,9 @@ export default async function handler(
         requestIp &&
         CHARGEBEE_WEBHOOKS_REQUEST_ORIGINS.find((ip) => ip === requestIp)
       ) {
-        await webhookHandlers(req.body);
+        await webhookHandlers(req.body, {
+          prisma,
+        });
         res.send("ok");
       } else {
         res.setHeader("Allow", "POST");

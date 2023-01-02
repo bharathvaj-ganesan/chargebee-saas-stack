@@ -1,9 +1,10 @@
+import superjson from "superjson";
 import Pricing from "@/components/Pricing";
-import { GetStaticPropsResult } from "next";
+import { GetServerSidePropsResult } from "next";
 import { Item, ItemPrice } from "@prisma/client";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/trpc/router/_app";
-import { createContextInner } from "@/server/trpc/context";
+import { createContext } from "@/server/trpc/context";
 
 interface Props {
   items: Item[];
@@ -14,10 +15,13 @@ export default function PricingPage({ items, itemPrices }: Props) {
   return <Pricing items={items} itemPrices={itemPrices} />;
 }
 
-export async function getStaticProps(): Promise<GetStaticPropsResult<any>> {
+export async function getServerSideProps(
+  context: any
+): Promise<GetServerSidePropsResult<any>> {
   const ssg = await createProxySSGHelpers({
     router: appRouter,
-    ctx: await createContextInner(),
+    ctx: await createContext(context),
+    transformer: superjson,
   });
   const [items, itemPrices] = await Promise.all([
     ssg.pricing.getAllItems.fetch(),
@@ -26,9 +30,9 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<any>> {
 
   return {
     props: {
+      trpcState: ssg.dehydrate(),
       items: items,
       itemPrices,
     },
-    revalidate: 3600,
   };
 }

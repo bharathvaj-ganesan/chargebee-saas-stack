@@ -3,10 +3,13 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "../common/get-server-auth-session";
-import { prisma } from "../db/client";
+import { prisma } from "@/server/db/client";
+import { chargebee } from "@/server/chargebee/client";
+import { PrismaClient } from "@prisma/client";
+import type { ChargeBee } from "chargebee-typescript";
 
 type CreateContextOptions = {
-  session: Session | null;
+  session: Session | null | undefined;
 };
 
 /** Use this helper for:
@@ -14,10 +17,17 @@ type CreateContextOptions = {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  **/
-export const createContextInner = async (opts?: CreateContextOptions) => {
+export const createContextInner = async (
+  opts?: CreateContextOptions
+): Promise<{
+  session: Session | null | undefined;
+  prisma: PrismaClient;
+  chargebee: ChargeBee;
+}> => {
   return {
     session: opts?.session,
     prisma,
+    chargebee,
   };
 };
 
