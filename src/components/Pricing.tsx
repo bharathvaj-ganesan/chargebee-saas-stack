@@ -44,7 +44,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
   const handleCheckout = async (price: ItemPrice) => {
     setPriceIdLoading(price.id);
     if (!session?.user) {
-      return router.push("/signin");
+      return router.push("/auth/signin");
     }
     // TODO
     // if (subscription) {
@@ -70,7 +70,6 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
     return (
       <section className="bg-black">
         <div className="mx-auto max-w-6xl py-8 px-4 sm:py-24 sm:px-6 lg:px-8">
-          <div className="sm:align-center sm:flex sm:flex-col"></div>
           <p className="mt-12 text-2xl font-extrabold text-white sm:text-center sm:text-3xl">
             No subscription pricing plans found. <br />
             Create them in your{" "}

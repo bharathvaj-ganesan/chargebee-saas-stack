@@ -1,15 +1,18 @@
-import Link from "next/link";
+import NavLink from "./NavLink";
 import s from "./Navbar.module.css";
-import { useRouter } from "next/router";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 
 const Navbar = () => {
-  const router = useRouter();
   const { data: session } = useSession();
 
   function signOutHandler() {
-    signOut();
-    router.push("/signin");
+    signOut({
+      callbackUrl: "/",
+    });
+  }
+
+  function signInHandler() {
+    signIn();
   }
 
   return (
@@ -20,18 +23,18 @@ const Navbar = () => {
       <div className="mx-auto max-w-6xl px-6">
         <div className="align-center relative flex flex-row justify-between py-4 md:py-6">
           <div className="flex flex-1 items-center">
-            <Link href="/">
+            <NavLink href="/">
               <span className="font-bold text-gray-200">Chargebee</span>
               &nbsp;<span className="text-primary">Stack</span>
-            </Link>
+            </NavLink>
             <nav className="ml-6 hidden space-x-2 lg:block">
-              <Link href="/pricing">
+              <NavLink href="/pricing">
                 <span className={s.link}>Pricing</span>
-              </Link>
+              </NavLink>
               {session && (
-                <Link href="/account">
+                <NavLink href="/account">
                   <span className={s.link}>Account</span>
-                </Link>
+                </NavLink>
               )}
             </nav>
           </div>
@@ -42,9 +45,9 @@ const Navbar = () => {
                 Sign out
               </span>
             ) : (
-              <Link href="/signin">
+              <span onClick={signInHandler}>
                 <span className={s.link}>Sign in</span>
-              </Link>
+              </span>
             )}
           </div>
         </div>

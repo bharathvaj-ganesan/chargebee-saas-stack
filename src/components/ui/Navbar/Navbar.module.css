@@ -17,3 +17,7 @@
 .logo {
   @apply transform cursor-pointer rounded-full duration-100 ease-in-out;
 }
+
+.active > * {
+  @apply pointer-events-none text-primary;
+}

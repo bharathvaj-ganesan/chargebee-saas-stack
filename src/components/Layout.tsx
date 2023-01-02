@@ -1,6 +1,4 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
-
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import { ReactNode } from "react";
@@ -29,9 +27,11 @@ export default function Layout({ children, meta: pageMeta }: Props) {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link rel="icon" href="/favicon.png" />
       </Head>
-      <Navbar />
-      <main>{children}</main>
-      <Footer />
+      <div className="flex h-screen flex-col">
+        <Navbar />
+        <main className="flex-grow">{children}</main>
+        <Footer />
+      </div>
     </>
   );
 }
