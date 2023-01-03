@@ -124,10 +124,6 @@ function Card({ title, description, footer, children }: any) {
 }
 
 export const getServerSideProps = requireAuth(async ({ res }: any) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
   return {
     props: {},
   };
