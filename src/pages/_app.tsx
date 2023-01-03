@@ -1,6 +1,7 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import NextNProgress from "nextjs-progressbar";
 import Layout from "@/components/Layout";
 import { trpc } from "@/utils/trpc";
 
@@ -13,6 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <NextNProgress color="#ff7846" />
       <Layout>
         <Component {...pageProps} />
       </Layout>
