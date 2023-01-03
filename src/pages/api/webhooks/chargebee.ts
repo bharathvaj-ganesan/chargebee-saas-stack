@@ -18,6 +18,8 @@ export default async function handler(
       ) {
         await webhookHandlers(req.body, {
           prisma,
+          req,
+          res,
         });
         res.send("ok");
       } else {

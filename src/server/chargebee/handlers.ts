@@ -5,6 +5,7 @@ import type {
   PrismaClient,
 } from "@prisma/client";
 import type { Event } from "chargebee-typescript/lib/resources";
+import { NextApiRequest, NextApiResponse } from "next";
 
 type Result = Event["content"];
 
@@ -97,7 +98,11 @@ async function upsertSubscriptionRecord({
 
 export default async function webhookHandlers(
   payload: Event,
-  { prisma }: { prisma: PrismaClient }
+  {
+    prisma,
+    req,
+    res,
+  }: { prisma: PrismaClient; req: NextApiRequest; res: NextApiResponse }
 ) {
   if (!payload) {
     throw new Error("Empty body");
@@ -112,6 +117,7 @@ export default async function webhookHandlers(
         content,
         prisma,
       });
+      await res.revalidate("/pricing");
       break;
     case "item_price_created":
     case "item_price_updated":
@@ -119,6 +125,7 @@ export default async function webhookHandlers(
         content,
         prisma,
       });
+      await res.revalidate("/pricing");
       break;
     case "subscription_created":
     case "subscription_cancelled":

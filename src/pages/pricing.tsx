@@ -37,5 +37,6 @@ export async function getStaticProps(
       items,
       itemPrices,
     },
+    revalidate: 3600,
   };
 }

@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { useState } from "react";
 import Script from "next/script";
 import { trpc } from "@/utils/trpc";
+import LoadingDots from "@/components/ui/LoadingDots";
 
 export default function AccountPage() {
   const { data: session } = useSession();
@@ -44,6 +45,20 @@ export default function AccountPage() {
     });
     setLoading(false);
   };
+
+  if (!user) {
+    return (
+      <>
+        <section className="mb-32 bg-black">
+          <div className="mx-auto max-w-sm px-4 pt-8 pb-8 sm:px-6 sm:pt-24 lg:px-8">
+            <div className="sm:align-center sm:flex sm:flex-col">
+              <LoadingDots />
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
 
   return (
     <section className="mb-32 bg-black">
