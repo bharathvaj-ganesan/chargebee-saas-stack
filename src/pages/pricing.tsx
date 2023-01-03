@@ -5,6 +5,7 @@ import { Item, ItemPrice, Subscription } from "@prisma/client";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/trpc/router/_app";
 import { createContext } from "@/server/trpc/context";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 interface Props {
   items: Item[];
@@ -27,11 +28,12 @@ export default function PricingPage({
 }
 
 export async function getServerSideProps(
-  context: any
+  context: CreateNextContextOptions
 ): Promise<GetServerSidePropsResult<any>> {
+  const ctx = await createContext(context);
   const ssg = await createProxySSGHelpers({
     router: appRouter,
-    ctx: await createContext(context),
+    ctx,
     transformer: superjson,
   });
   const [items, itemPrices] = await Promise.all([
@@ -40,9 +42,10 @@ export async function getServerSideProps(
   ]);
 
   let subscription = null;
-
-  if (context.session) {
-    subscription = ssg.subscription.getSubscriptionStatus.fetch();
+  if (ctx.session) {
+    const subscriptionResponse =
+      await ssg.subscription.getSubscriptionStatus.fetch();
+    subscription = subscriptionResponse.subscription;
   }
 
   return {

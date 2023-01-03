@@ -62,6 +62,10 @@ export default function Pricing({
     );
   }, [itemPrices, periodUnit]);
 
+  const handlePortal = () => {
+    router.push("/account");
+  };
+
   const handleCheckout = async (itemPrice: ItemPrice) => {
     if (!session?.user) {
       return router.push("/auth/signin");
@@ -76,13 +80,12 @@ export default function Pricing({
 
     cbInstance?.openCheckout({
       hostedPage: async () => {
-        const data = await createCheckoutSession({
+        const hostedPage = await createCheckoutSession({
           itemPriceId: itemPrice.id,
         });
-        return data.hostedPage;
+        return hostedPage;
       },
       success() {
-        //TODO: Make a request to cb to fetch the update
         alert(
           "Successfully created/updated subscription. It'll take sometime to update in the app"
         );
@@ -196,9 +199,15 @@ export default function Pricing({
                       variant="slim"
                       loading={priceIdLoading === itemPrice.id}
                       className="mt-8 block w-full rounded-md py-2 text-center text-sm font-semibold hover:border-primary hover:bg-zinc-900"
-                      onClick={() => handleCheckout(itemPrice)}
+                      onClick={() =>
+                        Boolean(subscription)
+                          ? handlePortal()
+                          : handleCheckout(itemPrice)
+                      }
                     >
-                      Subscribe
+                      {subscription?.itemPriceId === itemPrice.id
+                        ? "Manage"
+                        : "Subscribe"}
                     </Button>
                   </div>
                 </div>

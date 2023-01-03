@@ -2,8 +2,7 @@ import { TypeOf, z } from "zod";
 import { type Context } from "../context";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { getURL } from "@/utils/url";
-import { ChargebeeSubscriptionStatus } from "@prisma/client";
+import { getURL } from "@/utils/helpers";
 
 /**
  * Controllers
@@ -57,13 +56,34 @@ async function createCheckoutSessionHandler({
       .checkout_new_for_items(payload)
       .request();
 
-    return {
-      hostedPage: result?.hosted_page,
-    };
+    return result?.hosted_page;
   } catch (err) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Unable to create subscription @ Chargebee",
+    });
+  }
+}
+
+async function createPortalSessionHandler({ ctx }: { ctx: Context }) {
+  try {
+    const user = ctx.session?.user;
+    const userId = user?.id;
+    const chargebee = ctx.chargebee;
+
+    const payload: any = {
+      customer: {
+        id: userId,
+      },
+      // redirect_url: `${getURL()}/account`,
+    };
+
+    const result = await chargebee.portal_session.create(payload).request();
+    return result?.portal_session;
+  } catch (err: any) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: err.error_msg || "Unable to create portal session @ Chargebee",
     });
   }
 }
@@ -75,6 +95,9 @@ async function getSubscriptionStatusHandler({ ctx }: { ctx: Context }) {
     const subscription = await prisma.subscription.findUnique({
       where: {
         userId: userId,
+      },
+      include: {
+        ItemPrice: true,
       },
     });
 
@@ -99,5 +122,8 @@ export const subscriptionRouter = router({
     .mutation(({ input, ctx }) => createCheckoutSessionHandler({ input, ctx })),
   getSubscriptionStatus: protectedProcedure.query(({ ctx }) =>
     getSubscriptionStatusHandler({ ctx })
+  ),
+  createPortalSession: protectedProcedure.mutation(({ ctx }) =>
+    createPortalSessionHandler({ ctx })
   ),
 });

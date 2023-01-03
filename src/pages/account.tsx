@@ -1,47 +1,73 @@
+import superjson from "superjson";
 import { requireAuth } from "@/server/common/get-server-auth-session";
+import { appRouter } from "@/server/trpc/router/_app";
 import { useSession } from "next-auth/react";
 import LoadingDots from "@/components/ui/LoadingDots";
 import Button from "@/components/ui/Button";
 
 import Link from "next/link";
-import { useState, ReactNode } from "react";
+import { useState } from "react";
+import { createContext } from "@/server/trpc/context";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { ItemPrice, Subscription } from "@prisma/client";
+import Script from "next/script";
+import { trpc } from "@/utils/trpc";
 
-export default function AccountPage() {
+export default function AccountPage({
+  subscription,
+}: {
+  subscription: Subscription & {
+    ItemPrice: ItemPrice;
+  };
+}) {
   const { data: session } = useSession();
   const user = session?.user;
+  const [cbInstance, setCbInstance] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  // const { , subscription, userDetails } = useUser();
+  const { mutateAsync: createPortalSession } =
+    trpc.subscription.createPortalSession.useMutation();
 
-  const subscription: any = undefined;
-  const isLoading = false;
+  function initChargebee() {
+    return window.Chargebee.init({
+      site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE_ID,
+      isItemsModel: true,
+    });
+  }
 
   const redirectToCustomerPortal = async () => {
-    // setLoading(true);
-    // try {
-    //   const { url, error } = await postData({
-    //     url: '/api/create-portal-link'
-    //   });
-    //   window.location.assign(url);
-    // } catch (error) {
-    //   if (error) return alert((error as Error).message);
-    // }
-    // setLoading(false);
-  };
+    if (typeof window !== "undefined") {
+      if (!cbInstance && window.Chargebee) {
+        setCbInstance(initChargebee());
+        return;
+      }
+    }
+    setLoading(true);
+    cbInstance.setPortalSession(async () => {
+      const portalPage = await createPortalSession();
+      return portalPage;
+    });
+    const cbPortal = cbInstance.createChargebeePortal();
 
-  const subscriptionPrice =
-    subscription &&
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: subscription?.prices?.currency,
-      minimumFractionDigits: 0,
-    }).format((subscription?.prices?.unit_amount || 0) / 100);
+    cbPortal.open({
+      close() {
+        alert("It'll take sometime to reflect the changes if made any.");
+      },
+    });
+    setLoading(false);
+  };
 
   return (
     <section className="mb-32 bg-black">
+      <Script
+        src="https://js.chargebee.com/v2/chargebee.js"
+        onLoad={() => {
+          setCbInstance(initChargebee());
+        }}
+      />
       <div className="mx-auto max-w-6xl px-4 pt-8 pb-8 sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            <span className="text-primary">{`${session?.user?.name}'s `}</span>
+            <span className="text-primary">{`${user?.name}'s `}</span>
             <span>Account</span>
           </h1>
           <p className="m-auto mt-5 max-w-2xl text-xl text-zinc-200 sm:text-center sm:text-2xl">
@@ -54,7 +80,7 @@ export default function AccountPage() {
           title="Your Plan"
           description={
             subscription
-              ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
+              ? `You are currently on the ${subscription?.ItemPrice?.name} plan.`
               : ""
           }
           footer={
@@ -72,21 +98,7 @@ export default function AccountPage() {
               </Button>
             </div>
           }
-        >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            {isLoading ? (
-              <div className="mb-6 h-12">
-                <LoadingDots />
-              </div>
-            ) : subscription ? (
-              `${subscriptionPrice}/${subscription?.prices?.interval}`
-            ) : (
-              <Link href="/">
-                <span>Choose your plan</span>
-              </Link>
-            )}
-          </div>
-        </Card>
+        ></Card>
       </div>
     </section>
   );
@@ -107,6 +119,21 @@ function Card({ title, description, footer, children }: any) {
   );
 }
 
-export const getServerSideProps = requireAuth(() => {
-  return Promise.resolve({ props: {} });
+export const getServerSideProps = requireAuth(async (context: any) => {
+  const ctx = await createContext(context);
+  const ssg = await createProxySSGHelpers({
+    router: appRouter,
+    ctx,
+    transformer: superjson,
+  });
+  const subscriptionResponse =
+    await ssg.subscription.getSubscriptionStatus.fetch();
+  let subscription = subscriptionResponse.subscription;
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      subscription,
+    },
+  };
 });

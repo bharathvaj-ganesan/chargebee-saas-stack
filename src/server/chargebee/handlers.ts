@@ -76,15 +76,20 @@ async function upsertSubscriptionRecord({
   const subscription = content.subscription;
   await prisma.subscription.upsert({
     where: {
-      id: subscription.id,
       userId: subscription.customer_id,
     },
     update: {
+      itemPriceId: subscription.subscription_items?.find(
+        (item) => item.item_type === "plan"
+      )?.item_price_id as string,
       status: subscription.status as ChargebeeSubscriptionStatus,
     },
     create: {
       id: subscription.id,
       userId: subscription.customer_id,
+      itemPriceId: subscription.subscription_items?.find(
+        (item) => item.item_type === "plan"
+      )?.item_price_id as string,
       status: subscription.status as ChargebeeSubscriptionStatus,
     },
   });
