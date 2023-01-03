@@ -3,13 +3,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Script from "next/script";
-import type {
-  Item,
-  ItemPrice,
-  Subscription} from "@prisma/client";
-import {
-  ChargebeePeriodUnit
-} from "@prisma/client";
+import type { Item, ItemPrice } from "@prisma/client";
+import { ChargebeePeriodUnit } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { env } from "@/env/client.mjs";
 import { trpc } from "@/utils/trpc";
@@ -17,7 +12,6 @@ import { trpc } from "@/utils/trpc";
 interface Props {
   items: Item[];
   itemPrices: ItemPrice[];
-  subscription?: Subscription;
 }
 
 declare global {
@@ -28,11 +22,7 @@ declare global {
   }
 }
 
-export default function Pricing({
-  items = [],
-  itemPrices = [],
-  subscription,
-}: Props) {
+export default function Pricing({ items = [], itemPrices = [] }: Props) {
   const router = useRouter();
   const [cbInstance, setCbInstance] = useState<any>(null);
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
@@ -45,6 +35,11 @@ export default function Pricing({
   );
   const { mutateAsync: createCheckoutSession } =
     trpc.subscription.createCheckoutSession.useMutation();
+
+  const { data: subscription } =
+    trpc.subscription.getSubscriptionStatus.useQuery(undefined, {
+      enabled: Boolean(session),
+    });
 
   const getItem = (itemId: string) => items.find((i) => i.id === itemId);
 

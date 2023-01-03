@@ -8,8 +8,8 @@ import { chargebee } from "@/server/chargebee/client";
 import type { PrismaClient } from "@prisma/client";
 import type { ChargeBee } from "chargebee-typescript";
 
-type CreateContextOptions = {
-  session: Session | null | undefined;
+export type CreateContextOptions = {
+  session?: Session | null | undefined;
 };
 
 /** Use this helper for:

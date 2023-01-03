@@ -1,28 +1,20 @@
-import superjson from "superjson";
 import { requireAuth } from "@/server/common/get-server-auth-session";
-import { appRouter } from "@/server/trpc/router/_app";
 import { useSession } from "next-auth/react";
 import Button from "@/components/ui/Button";
 import { useState } from "react";
-import { createContext } from "@/server/trpc/context";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { ItemPrice, Subscription } from "@prisma/client";
 import Script from "next/script";
 import { trpc } from "@/utils/trpc";
 
-export default function AccountPage({
-  subscription,
-}: {
-  subscription: Subscription & {
-    ItemPrice: ItemPrice;
-  };
-}) {
+export default function AccountPage() {
   const { data: session } = useSession();
   const user = session?.user;
   const [cbInstance, setCbInstance] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { mutateAsync: createPortalSession } =
     trpc.subscription.createPortalSession.useMutation();
+
+  const { data: subscription } =
+    trpc.subscription.getSubscriptionStatus.useQuery();
 
   function initChargebee() {
     return window.Chargebee.init({
@@ -117,24 +109,7 @@ function Card({ title, description, footer, children }: any) {
 }
 
 export const getServerSideProps = requireAuth(async (context: any) => {
-  const ctx = await createContext(context);
-  const ssg = await createProxySSGHelpers({
-    router: appRouter,
-    ctx,
-    transformer: superjson,
-  });
-  const subscriptionResponse =
-    await ssg.subscription.getSubscriptionStatus.fetch();
-  const subscription = subscriptionResponse.subscription;
-
-  context.res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=10, stale-while-revalidate=59"
-  );
-
   return {
-    props: {
-      subscription,
-    },
+    props: {},
   };
 });

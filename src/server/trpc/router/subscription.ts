@@ -1,4 +1,4 @@
-import type { TypeOf} from "zod";
+import type { TypeOf } from "zod";
 import { z } from "zod";
 import { type Context } from "../context";
 import { router, protectedProcedure } from "../trpc";
@@ -102,9 +102,7 @@ async function getSubscriptionStatusHandler({ ctx }: { ctx: Context }) {
       },
     });
 
-    return {
-      subscription,
-    };
+    return subscription;
   } catch (err) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
