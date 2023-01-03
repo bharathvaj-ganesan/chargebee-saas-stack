@@ -1,10 +1,10 @@
-import {
+import type {
   ChargebeePeriodUnit,
   ChargebeePricingModel,
   ChargebeeSubscriptionStatus,
   PrismaClient,
 } from "@prisma/client";
-import { Event } from "chargebee-typescript/lib/resources";
+import type { Event } from "chargebee-typescript/lib/resources";
 
 type Result = Event["content"];
 

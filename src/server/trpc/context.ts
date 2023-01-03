@@ -5,7 +5,7 @@ import { type Session } from "next-auth";
 import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "@/server/db/client";
 import { chargebee } from "@/server/chargebee/client";
-import { PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import type { ChargeBee } from "chargebee-typescript";
 
 type CreateContextOptions = {

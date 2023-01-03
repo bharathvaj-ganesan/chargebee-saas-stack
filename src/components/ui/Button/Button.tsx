@@ -1,5 +1,6 @@
 import cn from "classnames";
-import React, { forwardRef, useRef, ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes } from "react";
+import React, { forwardRef, useRef } from "react";
 import mergeRefs from "react-merge-refs";
 import styles from "./Button.module.css";
 
@@ -30,9 +31,9 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
   const rootClassName = cn(
     styles.root,
     {
-      [styles.slim]: variant === "slim",
-      [styles.loading]: loading,
-      [styles.disabled]: disabled,
+      [styles.slim as string]: variant === "slim",
+      [styles.loading as string]: loading,
+      [styles.disabled as string]: disabled,
     },
     className
   );
@@ -58,5 +59,7 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
     </Component>
   );
 });
+
+Button.displayName = "Button";
 
 export default Button;

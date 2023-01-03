@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface PageMeta {
   title: string;

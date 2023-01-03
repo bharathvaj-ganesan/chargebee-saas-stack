@@ -2,14 +2,11 @@ import superjson from "superjson";
 import { requireAuth } from "@/server/common/get-server-auth-session";
 import { appRouter } from "@/server/trpc/router/_app";
 import { useSession } from "next-auth/react";
-import LoadingDots from "@/components/ui/LoadingDots";
 import Button from "@/components/ui/Button";
-
-import Link from "next/link";
 import { useState } from "react";
 import { createContext } from "@/server/trpc/context";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { ItemPrice, Subscription } from "@prisma/client";
+import type { ItemPrice, Subscription } from "@prisma/client";
 import Script from "next/script";
 import { trpc } from "@/utils/trpc";
 
@@ -128,7 +125,7 @@ export const getServerSideProps = requireAuth(async (context: any) => {
   });
   const subscriptionResponse =
     await ssg.subscription.getSubscriptionStatus.fetch();
-  let subscription = subscriptionResponse.subscription;
+  const subscription = subscriptionResponse.subscription;
 
   return {
     props: {

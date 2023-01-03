@@ -1,8 +1,9 @@
 import Button from "@/components/ui/Button";
 import { useEffect, useState } from "react";
-import { ClientSafeProvider, getProviders, signIn } from "next-auth/react";
+import type { ClientSafeProvider} from "next-auth/react";
+import { getProviders, signIn } from "next-auth/react";
 import { getServerAuthSession } from "@/server/common/get-server-auth-session";
-import { GetServerSidePropsContext } from "next";
+import type { GetServerSidePropsContext } from "next";
 import LoadingDots from "@/components/ui/LoadingDots";
 
 export default function SigninPage() {

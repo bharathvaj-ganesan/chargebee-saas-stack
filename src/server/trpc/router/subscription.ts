@@ -1,4 +1,5 @@
-import { TypeOf, z } from "zod";
+import type { TypeOf} from "zod";
+import { z } from "zod";
 import { type Context } from "../context";
 import { router, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";

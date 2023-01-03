@@ -1,11 +1,11 @@
 import superjson from "superjson";
 import Pricing from "@/components/Pricing";
-import { GetServerSidePropsResult } from "next";
-import { Item, ItemPrice, Subscription } from "@prisma/client";
+import type { GetServerSidePropsResult } from "next";
+import type { Item, ItemPrice, Subscription } from "@prisma/client";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/trpc/router/_app";
 import { createContext } from "@/server/trpc/context";
-import { CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 interface Props {
   items: Item[];

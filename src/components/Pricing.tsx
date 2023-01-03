@@ -3,11 +3,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import Script from "next/script";
-import {
-  ChargebeePeriodUnit,
+import type {
   Item,
   ItemPrice,
-  Subscription,
+  Subscription} from "@prisma/client";
+import {
+  ChargebeePeriodUnit
 } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { env } from "@/env/client.mjs";

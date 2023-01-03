@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import Link, { LinkProps } from "next/link";
+import type { LinkProps } from "next/link";
+import Link from "next/link";
 import s from "./Navbar.module.css";
 
 export default function NavLink({
