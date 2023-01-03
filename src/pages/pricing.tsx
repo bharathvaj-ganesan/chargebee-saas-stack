@@ -48,9 +48,13 @@ export async function getServerSideProps(
     subscription = subscriptionResponse.subscription;
   }
 
+  context.res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=10, stale-while-revalidate=59"
+  );
+
   return {
     props: {
-      trpcState: ssg.dehydrate(),
       subscription,
       items: items,
       itemPrices,
