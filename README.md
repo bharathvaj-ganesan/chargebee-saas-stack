@@ -1,4 +1,4 @@
-# Next.js Subscription Saas Starter
+# Chargebee Subscription Saas Starter
 
 A Chargebee focused T3 Stack that integrates User Subscriptions, Authentication and Testing. Driven by Prisma ORM. Deploys to Vercel
 
