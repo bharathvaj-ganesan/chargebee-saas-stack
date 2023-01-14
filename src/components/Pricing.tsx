@@ -51,6 +51,15 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!cbInstance && window.Chargebee) {
+        setCbInstance(initChargebee());
+        return;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     setItemPricesToDisplay(
       itemPrices
         .filter((item) => item.periodUnit === periodUnit)
@@ -66,12 +75,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
     if (!session?.user) {
       return router.push("/auth/signin");
     }
-    if (typeof window !== "undefined") {
-      if (!cbInstance && window.Chargebee) {
-        setCbInstance(initChargebee());
-        return;
-      }
-    }
+
     setPriceIdLoading(itemPrice.id);
 
     cbInstance?.openCheckout({
