@@ -32,8 +32,8 @@ const Navbar = () => {
                 <span className={s.link}>Pricing</span>
               </NavLink>
               {session && (
-                <NavLink href="/account">
-                  <span className={s.link}>Account</span>
+                <NavLink href="/settings">
+                  <span className={s.link}>Settings</span>
                 </NavLink>
               )}
             </nav>

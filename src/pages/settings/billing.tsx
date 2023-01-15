@@ -5,6 +5,7 @@ import { useState } from "react";
 import Script from "next/script";
 import { trpc } from "@/utils/trpc";
 import LoadingDots from "@/components/ui/LoadingDots";
+import SettingsLayout from "@/components/SettingsLayout";
 
 export default function AccountPage() {
   const { data: session } = useSession();
@@ -49,68 +50,60 @@ export default function AccountPage() {
   if (!user) {
     return (
       <>
-        <section className="mb-32 bg-black">
-          <div className="mx-auto max-w-sm px-4 pt-8 pb-8 sm:px-6 sm:pt-24 lg:px-8">
-            <div className="sm:align-center sm:flex sm:flex-col">
-              <LoadingDots />
-            </div>
-          </div>
-        </section>
+        <SettingsLayout>
+          <section
+            className="flex h-full w-full justify-center align-middle
+          "
+          >
+            <LoadingDots />
+          </section>
+        </SettingsLayout>
       </>
     );
   }
 
   return (
-    <section className="mb-32 bg-black">
-      <Script
-        src="https://js.chargebee.com/v2/chargebee.js"
-        onLoad={() => {
-          setCbInstance(initChargebee());
-        }}
-      />
-      <div className="mx-auto max-w-6xl px-4 pt-8 pb-8 sm:px-6 sm:pt-24 lg:px-8">
-        <div className="sm:align-center sm:flex sm:flex-col">
-          <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            <span className="text-primary">{`${user?.name}'s `}</span>
-            <span>Account</span>
-          </h1>
-          <p className="m-auto mt-5 max-w-2xl text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            We partnered with Chargebee for a simplified billing.
-          </p>
+    <SettingsLayout>
+      <div>
+        <Script
+          src="https://js.chargebee.com/v2/chargebee.js"
+          onLoad={() => {
+            setCbInstance(initChargebee());
+          }}
+        />
+        <div>
+          <Card
+            title="Your Plan"
+            description={
+              subscription
+                ? `You are currently on the ${subscription?.ItemPrice?.name} plan.`
+                : "You haven't subscribed for a plan."
+            }
+            footer={
+              <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                <p className="pb-4 sm:pb-0">
+                  Manage your subscription on Chargebee.
+                </p>
+                <Button
+                  variant="slim"
+                  loading={loading}
+                  disabled={loading || !subscription}
+                  onClick={redirectToCustomerPortal}
+                >
+                  Open customer portal
+                </Button>
+              </div>
+            }
+          ></Card>
         </div>
       </div>
-      <div className="p-4">
-        <Card
-          title="Your Plan"
-          description={
-            subscription
-              ? `You are currently on the ${subscription?.ItemPrice?.name} plan.`
-              : ""
-          }
-          footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">
-                Manage your subscription on Chargebee.
-              </p>
-              <Button
-                variant="slim"
-                loading={loading}
-                disabled={loading || !subscription}
-                onClick={redirectToCustomerPortal}
-              >
-                Open customer portal
-              </Button>
-            </div>
-          }
-        ></Card>
-      </div>
-    </section>
+    </SettingsLayout>
   );
 }
 
 function Card({ title, description, footer, children }: any) {
   return (
-    <div className="p m-auto	my-8 w-full max-w-3xl rounded-md border border-zinc-700">
+    <div>
       <div className="px-5 py-4">
         <h3 className="mb-1 text-2xl font-medium">{title}</h3>
         <p className="text-zinc-300">{description}</p>

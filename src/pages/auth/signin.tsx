@@ -62,7 +62,7 @@ export default function SigninPage() {
                   className="w-100 mb-3"
                   onClick={() =>
                     signIn(providers[providerKey]?.id, {
-                      callbackUrl: "/account",
+                      callbackUrl: "/settings",
                     })
                   }
                 >
@@ -97,7 +97,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (session) {
     return {
-      redirect: { destination: "/account" },
+      redirect: { destination: "/settings" },
     };
   }
   return {

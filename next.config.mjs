@@ -13,5 +13,13 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  async rewrites() {
+    return [
+      {
+        source: "/settings",
+        destination: "/settings/profile",
+      },
+    ];
+  },
 };
 export default config;

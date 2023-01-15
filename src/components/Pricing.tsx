@@ -68,7 +68,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
   }, [itemPrices, periodUnit]);
 
   const handlePortal = () => {
-    router.push("/account");
+    router.push("/settings/billing");
   };
 
   const handleCheckout = async (itemPrice: ItemPrice) => {

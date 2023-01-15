@@ -46,7 +46,7 @@ async function createCheckoutSessionHandler({
         id: userId,
         name: user?.name || "",
       },
-      redirect_url: `${getURL()}/account`,
+      redirect_url: `${getURL()}/settings/billing`,
       cancel_url: `${getURL()}/pricing`,
     };
     if (user?.email) {
@@ -76,7 +76,7 @@ async function createPortalSessionHandler({ ctx }: { ctx: Context }) {
       customer: {
         id: userId,
       },
-      // redirect_url: `${getURL()}/account`,
+      // redirect_url: `${getURL()}/settings`,
     };
 
     const result = await chargebee.portal_session.create(payload).request();
