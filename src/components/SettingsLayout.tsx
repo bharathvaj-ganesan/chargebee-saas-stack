@@ -161,7 +161,7 @@ export default function SettingsLayout({ children }: { children: any }) {
                           <span className="truncate">Integrations</span>
                         </Link>
                         <Link
-                          href="/"
+                          href="/settings/webhooks"
                           className="group flex items-center border-l-4 border-transparent px-3 py-2 text-sm font-medium  "
                           data-todo-x-state-description='undefined: "bg-orange-50 border-orange-500 text-orange-700 hover:bg-orange-50 hover:text-orange-700", undefined: "border-transparent  "'
                         >
