@@ -36,10 +36,12 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
   const { mutateAsync: createCheckoutSession } =
     trpc.subscription.createCheckoutSession.useMutation();
 
-  const { data: subscription } =
-    trpc.subscription.getSubscriptionStatus.useQuery(undefined, {
+  const { data: subscription } = trpc.subscription.getSubscription.useQuery(
+    undefined,
+    {
       enabled: Boolean(session),
-    });
+    }
+  );
 
   const getItem = (itemId: string) => items.find((i) => i.id === itemId);
 

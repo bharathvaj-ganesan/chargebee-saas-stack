@@ -8,14 +8,21 @@ export default function NavLink({
   exact = true,
   children,
   ...props
-}: LinkProps & { className?: string; exact?: boolean; children: any }) {
+}: LinkProps & {
+  className?: string;
+  exact?: boolean;
+  children: any;
+  activeClassName?: string;
+}) {
   const { pathname } = useRouter();
   const isActive = exact
     ? pathname === href
     : pathname.startsWith(href as string);
 
   if (isActive) {
-    props.className += ` ${s.active}`;
+    props.className += props.activeClassName
+      ? props.activeClassName
+      : ` ${s.active}`;
   }
 
   return (

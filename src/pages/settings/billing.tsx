@@ -1,22 +1,45 @@
 import { requireAuth } from "@/server/common/get-server-auth-session";
 import { useSession } from "next-auth/react";
 import Button from "@/components/ui/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import { trpc } from "@/utils/trpc";
 import LoadingDots from "@/components/ui/LoadingDots";
 import SettingsLayout from "@/components/SettingsLayout";
+import { ChargebeeSubscriptionStatus } from "@prisma/client";
 
 export default function AccountPage() {
   const { data: session } = useSession();
+  const { query } = useRouter();
   const user = session?.user;
   const [cbInstance, setCbInstance] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { mutateAsync: createPortalSession } =
     trpc.subscription.createPortalSession.useMutation();
+  const {
+    data: subscription,
+    refetch: refetchSubscription,
+    isLoading: isSubscriptionLoading,
+  } = trpc.subscription.getSubscription.useQuery();
+  const { mutateAsync: syncSubscription, isLoading: isSubscriptionSyncing } =
+    trpc.subscription.syncSubscription.useMutation();
 
-  const { data: subscription } =
-    trpc.subscription.getSubscriptionStatus.useQuery();
+  const subscriptionId = query.sub_id as string;
+  const subscriptionStatus = query.sub_status as string;
+
+  useEffect(() => {
+    if (
+      !subscription &&
+      !isSubscriptionLoading &&
+      subscriptionId &&
+      subscriptionStatus?.toLowerCase() === ChargebeeSubscriptionStatus.active
+    ) {
+      syncSubscription({
+        subscriptionId,
+      }).then(() => refetchSubscription());
+    }
+  }, [subscription, subscriptionId]);
 
   function initChargebee() {
     return window.Chargebee.init({
@@ -25,7 +48,7 @@ export default function AccountPage() {
     });
   }
 
-  const redirectToCustomerPortal = async () => {
+  const openCustomerPortal = async () => {
     if (typeof window !== "undefined") {
       if (!cbInstance && window.Chargebee) {
         setCbInstance(initChargebee());
@@ -39,15 +62,11 @@ export default function AccountPage() {
     });
     const cbPortal = cbInstance.createChargebeePortal();
 
-    cbPortal.open({
-      close() {
-        alert("It'll take sometime to reflect the changes if made any.");
-      },
-    });
+    cbPortal.open();
     setLoading(false);
   };
 
-  if (!user) {
+  if (!user || isSubscriptionSyncing || isSubscriptionLoading) {
     return (
       <>
         <SettingsLayout>
@@ -88,7 +107,7 @@ export default function AccountPage() {
                   variant="slim"
                   loading={loading}
                   disabled={loading || !subscription}
-                  onClick={redirectToCustomerPortal}
+                  onClick={openCustomerPortal}
                 >
                   Open customer portal
                 </Button>

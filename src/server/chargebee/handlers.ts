@@ -14,9 +14,12 @@ interface WebhookHandlerProp {
   prisma: PrismaClient;
 }
 
-async function upsertItemRecord({ content, prisma }: WebhookHandlerProp) {
+export async function upsertItemRecord({
+  content,
+  prisma,
+}: WebhookHandlerProp) {
   const item = content.item;
-  await prisma.item.upsert({
+  const result = await prisma.item.upsert({
     where: {
       id: item.id,
     },
@@ -32,9 +35,10 @@ async function upsertItemRecord({ content, prisma }: WebhookHandlerProp) {
       metadata: item.metadata,
     },
   });
+  return result;
 }
 
-async function upsertItemPriceRecord({
+export async function upsertItemPriceRecord({
   content,
   prisma,
 }: {
@@ -42,7 +46,7 @@ async function upsertItemPriceRecord({
   prisma: PrismaClient;
 }) {
   const itemPrice = content.item_price;
-  await prisma.itemPrice.upsert({
+  const result = await prisma.itemPrice.upsert({
     where: {
       id: itemPrice.id,
     },
@@ -68,14 +72,15 @@ async function upsertItemPriceRecord({
       active: itemPrice.status === "active",
     },
   });
+  return result;
 }
 
-async function upsertSubscriptionRecord({
+export async function upsertSubscriptionRecord({
   content,
   prisma,
 }: WebhookHandlerProp) {
   const subscription = content.subscription;
-  await prisma.subscription.upsert({
+  const result = await prisma.subscription.upsert({
     where: {
       userId: subscription.customer_id,
     },
@@ -94,6 +99,7 @@ async function upsertSubscriptionRecord({
       status: subscription.status as ChargebeeSubscriptionStatus,
     },
   });
+  return result;
 }
 
 export default async function webhookHandlers(
