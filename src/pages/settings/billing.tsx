@@ -8,12 +8,12 @@ import { trpc } from "@/utils/trpc";
 import LoadingDots from "@/components/ui/LoadingDots";
 import SettingsLayout from "@/components/SettingsLayout";
 import { ChargebeeSubscriptionStatus } from "@prisma/client";
+import { initChargebee } from "@/utils/helpers";
 
 export default function AccountPage() {
   const { data: session } = useSession();
   const { query } = useRouter();
   const user = session?.user;
-  const [cbInstance, setCbInstance] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const { mutateAsync: createPortalSession } =
     trpc.subscription.createPortalSession.useMutation();
@@ -41,26 +41,13 @@ export default function AccountPage() {
     }
   }, [subscription, subscriptionId]);
 
-  function initChargebee() {
-    return window.Chargebee.init({
-      site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE_ID,
-      isItemsModel: true,
-    });
-  }
-
   const openCustomerPortal = async () => {
-    if (typeof window !== "undefined") {
-      if (!cbInstance && window.Chargebee) {
-        setCbInstance(initChargebee());
-        return;
-      }
-    }
     setLoading(true);
-    cbInstance.setPortalSession(async () => {
+    window.cbInstance?.setPortalSession(async () => {
       const portalPage = await createPortalSession();
       return portalPage;
     });
-    const cbPortal = cbInstance.createChargebeePortal();
+    const cbPortal = window.cbInstance?.createChargebeePortal();
 
     cbPortal.open();
     setLoading(false);
@@ -87,7 +74,7 @@ export default function AccountPage() {
         <Script
           src="https://js.chargebee.com/v2/chargebee.js"
           onLoad={() => {
-            setCbInstance(initChargebee());
+            window.cbInstance = initChargebee();
           }}
         />
         <div>

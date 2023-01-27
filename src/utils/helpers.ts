@@ -9,3 +9,10 @@ export const getURL = () => {
   url = url.charAt(url.length - 1) === "/" ? url : `${url}/`;
   return url;
 };
+
+export function initChargebee() {
+  return window.Chargebee.init({
+    site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE_ID,
+    isItemsModel: true,
+  });
+}

@@ -1,6 +1,6 @@
 import cn from "classnames";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Script from "next/script";
 import type { Item, ItemPrice } from "@prisma/client";
@@ -8,6 +8,7 @@ import { ChargebeePeriodUnit } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { env } from "@/env/client.mjs";
 import { trpc } from "@/utils/trpc";
+import { initChargebee } from "@/utils/helpers";
 
 interface Props {
   items: Item[];
@@ -19,20 +20,22 @@ declare global {
     // Chargebee.js must be loaded directly from https://js.chargebee.com/v2/chargebee.js, which
     // places a `Chargebee` object on the window
     Chargebee?: any;
+    cbInstance?: any;
   }
 }
 
 export default function Pricing({ items = [], itemPrices = [] }: Props) {
   const router = useRouter();
-  const [cbInstance, setCbInstance] = useState<any>(null);
   const [priceIdLoading, setPriceIdLoading] = useState<string>();
   const { data: session } = useSession();
   const [periodUnit, setPeriodUnit] = useState<ChargebeePeriodUnit>(
     ChargebeePeriodUnit.month
   );
-  const [itemPricesToDisplay, setItemPricesToDisplay] = useState<ItemPrice[]>(
-    []
-  );
+
+  const itemPricesToDisplay = itemPrices
+    .filter((item) => item.periodUnit === periodUnit)
+    .sort((a, b) => a.price - b.price);
+
   const { mutateAsync: createCheckoutSession } =
     trpc.subscription.createCheckoutSession.useMutation();
 
@@ -45,30 +48,6 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
 
   const getItem = (itemId: string) => items.find((i) => i.id === itemId);
 
-  function initChargebee() {
-    return window.Chargebee.init({
-      site: process.env.NEXT_PUBLIC_CHARGEBEE_SITE_ID,
-      isItemsModel: true,
-    });
-  }
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (!cbInstance && window.Chargebee) {
-        setCbInstance(initChargebee());
-        return;
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    setItemPricesToDisplay(
-      itemPrices
-        .filter((item) => item.periodUnit === periodUnit)
-        .sort((a, b) => a.price - b.price)
-    );
-  }, [itemPrices, periodUnit]);
-
   const handlePortal = () => {
     router.push("/settings/billing");
   };
@@ -80,7 +59,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
 
     setPriceIdLoading(itemPrice.id);
 
-    cbInstance?.openCheckout({
+    window.cbInstance?.openCheckout({
       hostedPage: async () => {
         const hostedPage = await createCheckoutSession({
           itemPriceId: itemPrice.id,
@@ -124,7 +103,7 @@ export default function Pricing({ items = [], itemPrices = [] }: Props) {
       <Script
         src="https://js.chargebee.com/v2/chargebee.js"
         onLoad={() => {
-          setCbInstance(initChargebee());
+          window.cbInstance = initChargebee();
         }}
       />
       <div className="mx-auto max-w-6xl py-8 px-4 sm:py-24 sm:px-6 lg:px-8">
