@@ -5,8 +5,8 @@ export default function LandingPage() {
     <main className="flex h-full flex-col items-center justify-center bg-black">
       <div className="relative flex flex-col items-center">
         <img
-          src="/next.svg"
-          alt="Next JS"
+          src="/atomicpricing.svg"
+          alt="Atomic Pricing"
           className="float absolute top-[5%] left-[25%] h-16 w-28 select-none opacity-60 grayscale hue-rotate-180 invert transition
 					hover:scale-110 hover:opacity-100 hover:grayscale-0"
         />
