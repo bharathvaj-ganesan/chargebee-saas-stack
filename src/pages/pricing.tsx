@@ -1,9 +1,5 @@
-import Pricify from "@atomicpricing/pricify";
+import Pricify from "@chargebee/atomicpricing";
 import { useEffect } from "react";
-
-// height and width
-// if provided, then frame is bounded
-// if not, then it autoscales
 
 export default function PricingPage() {
   useEffect(() => {
@@ -14,7 +10,7 @@ export default function PricingPage() {
     <>
       <div
         id="pricify-hosted-pricing-page"
-        data-pricify-site="01GTKTPXN46E55JG69QEHV2BXC"
+        data-pricify-site="01GTC02AXKE17Q0J9ZNMF73FRH"
         data-pricify-pricingpage="default"
       ></div>
       <div>
