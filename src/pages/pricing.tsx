@@ -19,8 +19,10 @@ export default function PricingPage() {
       {hasMounted && (
         <div
           id="pricify-hosted-pricing-page"
-          data-pricify-site="01GTC02AXKE17Q0J9ZNMF73FRH"
-          data-pricify-pricingpage="default"
+          data-pricify-site={process.env.NEXT_PUBLIC_ATOMIC_PRICING_SITE}
+          data-pricify-pricingpage={
+            process.env.NEXT_PUBLIC_ATOMIC_PRICING_HOSTED_PAGE
+          }
         ></div>
       )}
       <div>
