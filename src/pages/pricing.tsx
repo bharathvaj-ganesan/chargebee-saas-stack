@@ -1,42 +1,65 @@
-import superjson from "superjson";
-import Pricing from "@/components/Pricing";
-import type { GetStaticPropsResult } from "next";
-import type { Item, ItemPrice } from "@prisma/client";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "@/server/trpc/router/_app";
-import {
-  CreateContextOptions,
-  createContextInner,
-} from "@/server/trpc/context";
+import Pricify from "@chargebee/atomicpricing";
+import { useEffect, useState } from "react";
 
-interface Props {
-  items: Item[];
-  itemPrices: ItemPrice[];
-}
+export default function PricingPage() {
+  const [hasMounted, setHasMounted] = useState(false);
 
-export default function PricingPage({ items, itemPrices }: Props) {
-  return <Pricing items={items} itemPrices={itemPrices} />;
-}
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
-export async function getStaticProps(
-  context: CreateContextOptions
-): Promise<GetStaticPropsResult<any>> {
-  const ctx = await createContextInner(context);
-  const ssg = await createProxySSGHelpers({
-    router: appRouter,
-    ctx,
-    transformer: superjson,
-  });
-  const [items, itemPrices] = await Promise.all([
-    ssg.pricing.getAllItems.fetch(),
-    ssg.pricing.getAllItemPrices.fetch(),
-  ]);
+  useEffect(() => {
+    if (hasMounted) {
+      Pricify.init();
+    }
+  }, [hasMounted]);
 
-  return {
-    props: {
-      items,
-      itemPrices,
-    },
-    revalidate: 3600,
-  };
+  return (
+    <>
+      {hasMounted && (
+        <div
+          id="pricify-hosted-pricing-page"
+          data-pricify-site={process.env.NEXT_PUBLIC_ATOMIC_PRICING_SITE}
+          data-pricify-pricingpage={
+            process.env.NEXT_PUBLIC_ATOMIC_PRICING_HOSTED_PAGE
+          }
+        ></div>
+      )}
+      <div>
+        <p className="mt-24 text-center text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">
+          Brought to you by
+        </p>
+        <div className="my-12 flex flex-col items-center space-y-4 sm:mt-8 sm:grid sm:grid-cols-2 sm:gap-6 sm:space-y-0 md:mx-auto md:max-w-2xl">
+          <div className="flex items-center justify-center">
+            <a
+              target="_blank"
+              href="https://chargebee.com"
+              rel="noreferrer"
+              aria-label="chargebee.com Link"
+            >
+              <img
+                src="/chargebee.svg"
+                alt="chargebee.com Logo"
+                className="h-14 text-white"
+              />
+            </a>
+          </div>
+          <div className="flex items-center justify-center">
+            <a
+              target="_blank"
+              href="https://atomicpricing.com"
+              rel="noreferrer"
+              aria-label="atomicpricing.com Link"
+            >
+              <img
+                src="/atomicpricing-white.svg"
+                alt="atomicpricing.com Logo"
+                className="h-14 text-white"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
