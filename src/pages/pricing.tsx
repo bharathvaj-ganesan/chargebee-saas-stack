@@ -1,18 +1,28 @@
 import Pricify from "@chargebee/atomicpricing";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function PricingPage() {
+  const [hasMounted, setHasMounted] = useState(false);
+
   useEffect(() => {
-    Pricify.init();
+    setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (hasMounted) {
+      Pricify.init();
+    }
+  }, [hasMounted]);
 
   return (
     <>
-      <div
-        id="pricify-hosted-pricing-page"
-        data-pricify-site="01GTC02AXKE17Q0J9ZNMF73FRH"
-        data-pricify-pricingpage="default"
-      ></div>
+      {hasMounted && (
+        <div
+          id="pricify-hosted-pricing-page"
+          data-pricify-site="01GTC02AXKE17Q0J9ZNMF73FRH"
+          data-pricify-pricingpage="default"
+        ></div>
+      )}
       <div>
         <p className="mt-24 text-center text-xs font-bold uppercase tracking-[0.3em] text-zinc-400">
           Brought to you by
